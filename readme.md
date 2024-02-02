@@ -1,15 +1,19 @@
+## About Us
+- Team Name : `RU LEGION`
+- Member1 : `Moontasir Mahmood` - `moontasir042@gmail.com`
+- Member2 : `Md Atikur Rahman`
+- Member3 : `Abdullah Al Ghalib`
+
 ## Getting started
 
 ### Build Docker file
 - `docker-compose build`
 
-To start project, run:
+### To start project, run:
+- `docker-compose up`
 
-```cmd
-docker-compose up
-```
 
-The API will then be available at [http://127.0.0.1:8000](http://127.0.0.1:8000).
+The API will then be available at [http://127.0.0.1:5000](http://127.0.0.1:5000).
 
 
 ---
