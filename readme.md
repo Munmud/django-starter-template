@@ -1,8 +1,8 @@
 ## About Us
 - Team Name : `RU LEGION`
 - Member1 : `Moontasir Mahmood` - `moontasir042@gmail.com`
-- Member2 : `Md Atikur Rahman`
-- Member3 : `Abdullah Al Ghalib`
+- Member2 : `Md Atikur Rahman` - `md.atik.dev@gmail.com`
+- Member3 : `Abdullah Al Ghalib` - `abdullah.ice.ru@gmail.com`
 
 ## Getting started
 
