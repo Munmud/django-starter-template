@@ -16,7 +16,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-
+DATA_DIR = os.path.join(BASE_DIR,'data')
 # Application definition
 
 AUTH_USER_MODEL = 'core.user'
@@ -28,10 +28,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'core',
-    'user',
     'rest_framework',
     'rest_framework.authtoken',
+    'core',
+    'user',
+    'book',
 ]
 
 MIDDLEWARE = [
@@ -119,3 +120,10 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+    ],
+}
