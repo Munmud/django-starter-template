@@ -8,6 +8,12 @@ class TrainUser(models.Model):
     user_name = models.CharField(max_length=255)
     balance = models.PositiveIntegerField()
 
+class Wallet(models.Model):
+    wallet_id = models.IntegerField(primary_key=True)  # Assuming wallet_id is the primary key
+    balance = models.PositiveIntegerField()
+    wallet_user = models.OneToOneField(TrainUser, on_delete=models.CASCADE)
+
+
 class Station(models.Model):
     station_id = models.IntegerField(primary_key=True)
     station_name = models.CharField(max_length=255)
@@ -56,3 +62,4 @@ class Stop(models.Model):
         return f"Stop at station {self.station_id} for train {self.train.train_name}"
     
 
+   

@@ -17,7 +17,107 @@ from user.utils import get_user_from_token
 from django.db.models import Case, When, Value, CharField
 from django.db.models import F, Value
 from .models import TrainUser, Station, Train
-from .serializers import TrainUserSerializer, StationSerializer, TrainSerializer
+from .serializers import TrainUserSerializer, StationSerializer, TrainSerializer, WalletSerializer
+
+
+class WalletDetailedView(APIView):
+    # authentication_classes = [JWTAuthentication]
+    # permission_classes = [IsAuthenticated]
+    def get_object(self, pk):
+        try:
+            return TrainUser.objects.get(pk=pk)
+        except TrainUser.DoesNotExist:
+            return None
+
+    def get(self, request, wallet_id):
+        response={
+            'status_code': status.HTTP_400_BAD_REQUEST,
+            'message': 'Bad Request',
+            'data': None,
+            'error': None,
+            'timestamp': datetime.now()
+        }
+        try:
+            user = self.get_object(wallet_id)
+            if user:
+                
+                return Response({
+                    
+                    "wallet_id": user.user_id, # user's wallet id
+                    "balance": user.balance, # user's wallet balance
+                    "wallet_user":
+                    {
+                        "user_id": user.user_id, # user's numeric id
+                        "user_name": user.user_name # user's full name
+                    }
+                }, status=status.HTTP_200_OK)
+                response['data'] = {'ProductList': serializer.data}
+                response['error'] = None
+                response['message'] = f"Success"
+                response['status_code'] = status.HTTP_200_OK
+            else:
+                return Response({"message": f"wallet with id: {wallet_id} was not found" }, status=status.HTTP_404_NOT_FOUND)
+                response['message'] = f"Can't Find Requested Item"
+                response['status_code'] = status.HTTP_404_NOT_FOUND
+        except Exception as e:
+            if isinstance(e, DRFValidationError):
+                errors = {}
+                for field, field_errors in e.detail.items():
+                    errors[field] = str(field_errors[0])
+                response['error'] = errors
+            else:
+                response['message'] = str(e)
+        serializer = GeneralResponseSerializer(data=response)
+        serializer.is_valid(raise_exception=True)
+        return Response(serializer.data, status=response['status_code'])
+
+    def put(self, request, wallet_id):
+        response={
+            'status_code': status.HTTP_400_BAD_REQUEST,
+            'message': 'Bad Request',
+            'data': None,
+            'error': None,
+            'timestamp': datetime.now()
+        }
+        try:
+            user = self.get_object(wallet_id)
+            if user:
+                requested_data = request.data
+                cc1 = int(requested_data["recharge"])
+                cc2 = user.balance
+                user.balance = cc1 + cc2
+                user.save()
+
+                return Response({
+                    "wallet_id": user.user_id, # user's wallet id
+                    "balance": user.balance, # user's wallet balance
+                    "wallet_user":
+                    {
+                        "user_id": user.user_id, # user's numeric id
+                        "user_name": user.user_name # user's full name
+                    }
+                }, status=status.HTTP_200_OK)
+                response['data'] = {'ProductList': serializer.data}
+                response['error'] = None
+                response['message'] = f"Update Successful"
+                response['status_code'] = status.HTTP_200_OK
+            else:
+                return Response({"message": f"wallet with id: {wallet_id} was not found" }, status=status.HTTP_404_NOT_FOUND)
+                response['message'] = f"Can't Find Requested Item"
+                response['status_code'] = status.HTTP_404_NOT_FOUND
+
+        except Exception as e:
+            if isinstance(e, DRFValidationError):
+                errors = {}
+                for field, field_errors in e.detail.items():
+                    errors[field] = str(field_errors[0])
+                response['error'] = errors
+            else:
+                response['message'] = str(e)
+        serializer = GeneralResponseSerializer(data=response)
+        serializer.is_valid(raise_exception=True)
+        return Response(serializer.data, status=response['status_code'])
+
 
 class StationListView(APIView):
 

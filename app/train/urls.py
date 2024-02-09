@@ -1,6 +1,6 @@
 from django.urls import path, include
 # from .views import listProduct, listmessages
-from .views import TrainUserListView, StationListView, TrainListView, StationDetailedView
+from .views import TrainUserListView, StationListView, TrainListView, StationDetailedView, WalletDetailedView
 
 urlpatterns = [
     path('users', TrainUserListView.as_view() ),
@@ -14,4 +14,6 @@ urlpatterns = [
     path('trains/', TrainListView.as_view()),
     # path('/<int:pid>', BookDetailedView.as_view(), name="bookDetails"),
     # path('/<int:pid>/', BookDetailedView.as_view(), name="bookDetails")
+    path('wallets/<int:wallet_id>', WalletDetailedView.as_view(), name="bookDetails"),
+    path('wallets/<int:wallet_id>/', WalletDetailedView.as_view(), name="bookDetails"),
 ]

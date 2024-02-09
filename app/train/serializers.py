@@ -1,5 +1,7 @@
 from rest_framework import serializers
-from .models import TrainUser, Station, Train, Stop
+from .models import TrainUser, Station, Train, Stop, Wallet
+
+
 
 class TrainUserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -16,6 +18,20 @@ class StopSerializer(serializers.ModelSerializer):
     class Meta:
         model = Stop
         fields = ['station_id', 'arrival_time', 'departure_time', 'fare']
+
+class WalletSerializer(serializers.ModelSerializer):
+    wallet_user = TrainUserSerializer()
+    class Meta:
+        model = Wallet
+        fields = '__all__'
+
+    def create(self, validated_data):
+        # Extracting nested data for wallet_user
+        wallet_user = validated_data.pop('wallet_user')
+        user = TrainUser.objects.get(user_id = wallet_user["user_id"])
+        # Create Wallet instance with associated TrainUser
+        wallet = Wallet.objects.create(wallet_user=user, **validated_data)
+        return wallet
 
 class TrainSerializer(serializers.ModelSerializer):
     stops = StopSerializer(many=True)
