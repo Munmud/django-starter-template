@@ -283,7 +283,6 @@ class TrainUserListView(APIView):
         serializer.is_valid(raise_exception=True)
         return Response(serializer.data, status=response['status_code'])
 
-
 class TrainListView(APIView):
     def post(self, request):
         response={
@@ -324,7 +323,6 @@ class TrainListView(APIView):
         serializer = GeneralResponseSerializer(data=response)
         serializer.is_valid(raise_exception=True)
         return Response(serializer.data, status=response['status_code'])
-
 
 class StationDetailedView(APIView):
     # authentication_classes = [JWTAuthentication]
@@ -455,4 +453,41 @@ class StationDetailedView(APIView):
     #     serializer = GeneralResponseSerializer(data=response)
     #     serializer.is_valid(raise_exception=True)
     #     return Response(serializer.data)
+
+class BuyTicketListView(APIView):
+
+    def post(self, request):
+        response={
+            'status_code': status.HTTP_400_BAD_REQUEST,
+            'message': 'Bad Request',
+            'data': None,
+            'error': None,
+            'timestamp': datetime.now()
+        }
+#         try:
+        wallet_id = request.data.get('wallet_id')
+        time_after = request.data.get('time_after')
+        station_from = request.data.get('station_from')
+        station_to = request.data.get('station_to')
+        return Response({
+                "message": f"no ticket available for station: {station_from} to station: {station_to}"
+            }, status=status.HTTP_403_FORBIDDEN)
+
+class RRRListView(APIView):
+
+    def get(self, request):
+        response={
+            'status_code': status.HTTP_400_BAD_REQUEST,
+            'message': 'Bad Request',
+            'data': None,
+            'error': None,
+            'timestamp': datetime.now()
+        }
+#         try:
+        station_from = request.query_params.get('from')
+        station_to = request.query_params.get('to')
+        optimize = request.query_params.get('optimize')
+        return Response({
+                "message": f"no routes available from station: {station_from} to station: {station_to}"
+            }, status=status.HTTP_403_FORBIDDEN)
 

@@ -1,6 +1,5 @@
 from rest_framework import serializers
-from .models import TrainUser, Station, Train, Stop, Wallet
-
+from .models import TrainUser, Station, Train, Stop, Wallet, Route
 
 
 class TrainUserSerializer(serializers.ModelSerializer):
@@ -12,7 +11,6 @@ class StationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Station
         fields = '__all__'
-
 
 class StopSerializer(serializers.ModelSerializer):
     class Meta:
@@ -43,6 +41,18 @@ class TrainSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         stops_data = validated_data.pop('stops')
         train = Train.objects.create(**validated_data)
+        for i in range(len(stops_data)):
+            if (i == 0): continue
+            print(stops_data[i-1])
+            print(stops_data[i])
+            route = Route.objects.create(
+                from_station = stops_data[i-1]['station_id'],
+                to_station = stops_data[i]['station_id'],
+                fare = stops_data[i]['fare'],
+                train = train,
+                start_time = stops_data[i-1]['departure_time'],
+                end_time = stops_data[i]['arrival_time']
+            )
         for stop_data in stops_data:
             Stop.objects.create(train=train, **stop_data)
         return train

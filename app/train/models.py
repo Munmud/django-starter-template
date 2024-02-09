@@ -13,7 +13,6 @@ class Wallet(models.Model):
     balance = models.PositiveIntegerField()
     wallet_user = models.OneToOneField(TrainUser, on_delete=models.CASCADE)
 
-
 class Station(models.Model):
     station_id = models.IntegerField(primary_key=True)
     station_name = models.CharField(max_length=255)
@@ -60,6 +59,22 @@ class Stop(models.Model):
 
     def __str__(self):
         return f"Stop at station {self.station_id} for train {self.train.train_name}"
-    
+
+class Route(models.Model):
+    from_station = models.ForeignKey(
+        'Station',
+        on_delete=models.CASCADE,
+        related_name='routes_from'
+    )
+    to_station = models.ForeignKey(
+        'Station',
+        on_delete=models.CASCADE,
+        related_name='routes_to'
+    )
+    fare = models.PositiveIntegerField()
+    train = models.ForeignKey(Train, on_delete=models.CASCADE)
+    start_time = models.CharField(max_length=50)
+    end_time = models.CharField(max_length=50)
+
 
    
