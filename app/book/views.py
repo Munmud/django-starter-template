@@ -13,10 +13,16 @@ from rest_framework.authentication import TokenAuthentication
 from rest_framework import filters
 from rest_framework import generics
 from django.db.models import Q
+from rest_framework_simplejwt.authentication import JWTAuthentication
+from rest_framework_simplejwt.exceptions import AuthenticationFailed
+from user.utils import get_user_from_token
 
-
+# @authentication_classes([JWTAuthentication])
+# @permission_classes([IsAuthenticated])
 class BookListView(APIView):
-    def get(self, request):
+    # authentication_classes = [JWTAuthentication]
+    # permission_classes = [IsAuthenticated]
+    def get(self, request, *args, **kwargs):
         response={
             'status_code': status.HTTP_400_BAD_REQUEST,
             'message': 'Bad Request',
@@ -58,6 +64,9 @@ class BookListView(APIView):
             response['error'] = None
             response['message'] = f"Success"
             response['status_code'] = status.HTTP_200_OK
+        except AuthenticationFailed as e:
+            # Handle authentication failure
+            return Response({'detail': 'Authentication failed.'}, status=401)
         except Exception as e:
             if isinstance(e, DRFValidationError):
                 errors = {}
@@ -101,9 +110,11 @@ class BookListView(APIView):
         serializer.is_valid(raise_exception=True)
         return Response(serializer.data, status=response['status_code'])
 
-# # # @authentication_classes([TokenAuthentication])
-# # # @permission_classes([IsAuthenticated])
+# @authentication_classes([JWTAuthentication])
+# @permission_classes([IsAuthenticated])
 class BookDetailedView(APIView):
+    # authentication_classes = [JWTAuthentication]
+    # permission_classes = [IsAuthenticated]
     def get_object(self, pk):
         try:
             return Book.objects.get(pk=pk)
@@ -210,30 +221,3 @@ class BookDetailedView(APIView):
         serializer = GeneralResponseSerializer(data=response)
         serializer.is_valid(raise_exception=True)
         return Response(serializer.data)
-
-class BookSearch(generics.ListAPIView):
-    serializer_class = BookSerializer
-
-    def get_queryset(self):
-        queryset = Book.objects.all()
-
-        title = self.request.query_params.get('title', None)
-        author = self.request.query_params.get('author', None)
-        genre = self.request.query_params.get('genre', None)
-        sort_by = self.request.query_params.get('sort', None)
-
-        if title:
-            queryset = queryset.filter(title__icontains=title)
-
-        if author:
-            queryset = queryset.filter(author__icontains=author)
-
-        if genre:
-            queryset = queryset.filter(genre__icontains=genre)
-
-        if sort_by:
-            queryset = queryset.order_by(sort_by)
-
-        return queryset
-
-

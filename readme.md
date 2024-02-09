@@ -13,15 +13,15 @@
 - `docker-compose up`
 
 
-The API will then be available at [http://127.0.0.1:5000](http://127.0.0.1:5000).
+The API will then be available at [http://127.0.0.1:8000](http://127.0.0.1:8000).
 
 
 ---
 ## Development Guide
 
-### Load Initial Products
-- `docker-compose run --rm app sh -c "python manage.py load_initial_products"`
+### Load Initial Data
 - `docker-compose run --rm app sh -c "python manage.py load_initial_books"`
+- `docker-compose run --rm app sh -c "python manage.py generate_initial_super_user"`
 
 ### Create Project
 - `docker-compose run app sh -c "django-admin startproject app ."`
