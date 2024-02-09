@@ -84,6 +84,9 @@ class WalletDetailedView(APIView):
             if user:
                 requested_data = request.data
                 cc1 = int(requested_data["recharge"])
+
+                if (cc1 <100 or cc1 >10000):
+                    return Response({"message": f"invalid amount: {cc1}" }, status=status.HTTP_400_BAD_REQUEST)
                 cc2 = user.balance
                 user.balance = cc1 + cc2
                 user.save()
